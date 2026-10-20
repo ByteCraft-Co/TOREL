@@ -62,6 +62,31 @@ target_compile_features(torel_source
 torel_enable_warnings(torel_source)
 
 # -----------------------------------------------------------------------------
+# Diagnostics
+# -----------------------------------------------------------------------------
+
+add_library(torel_diagnostics
+    compiler/diagnostics/src/DiagnosticEngine.cpp
+)
+
+target_include_directories(torel_diagnostics
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/compiler/diagnostics/include
+)
+
+target_compile_features(torel_diagnostics
+    PUBLIC
+        cxx_std_23
+)
+
+target_link_libraries(torel_diagnostics
+    PUBLIC
+        torel_source
+)
+
+torel_enable_warnings(torel_diagnostics)
+
+# -----------------------------------------------------------------------------
 # Stage 0 compiler
 # -----------------------------------------------------------------------------
 
@@ -82,6 +107,7 @@ target_compile_definitions(torelc
 target_link_libraries(torelc
     PRIVATE
         torel_source
+        torel_diagnostics
 )
 
 torel_enable_warnings(torelc)
@@ -112,5 +138,21 @@ if(TOREL_BUILD_TESTS)
     add_test(
         NAME source.infrastructure
         COMMAND torel_source_tests
+    )
+
+    add_executable(torel_diagnostics_tests
+        tests/diagnostics/DiagnosticTests.cpp
+    )
+
+    target_link_libraries(torel_diagnostics_tests
+        PRIVATE
+            torel_diagnostics
+    )
+
+    torel_enable_warnings(torel_diagnostics_tests)
+
+    add_test(
+        NAME diagnostics.foundation
+        COMMAND torel_diagnostics_tests
     )
 endif()
