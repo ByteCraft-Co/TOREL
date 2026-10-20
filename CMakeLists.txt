@@ -21,13 +21,56 @@ message(STATUS "TOREL version: ${PROJECT_VERSION}")
 message(STATUS "LLVM version: ${LLVM_PACKAGE_VERSION}")
 message(STATUS "LLVM directory: ${LLVM_DIR}")
 
+function(torel_enable_warnings target)
+    if(MSVC)
+        target_compile_options(
+            ${target}
+            PRIVATE
+                /W4
+                /permissive-
+        )
+    else()
+        target_compile_options(
+            ${target}
+            PRIVATE
+                -Wall
+                -Wextra
+                -Wpedantic
+        )
+    endif()
+endfunction()
+
+# -----------------------------------------------------------------------------
+# Source infrastructure
+# -----------------------------------------------------------------------------
+
+add_library(torel_source
+    compiler/source/src/SourceFile.cpp
+    compiler/source/src/SourceManager.cpp
+)
+
+target_include_directories(torel_source
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/compiler/source/include
+)
+
+target_compile_features(torel_source
+    PUBLIC
+        cxx_std_23
+)
+
+torel_enable_warnings(torel_source)
+
+# -----------------------------------------------------------------------------
+# Stage 0 compiler
+# -----------------------------------------------------------------------------
+
 add_executable(torelc
     compiler/driver/main.cpp
 )
 
 target_include_directories(torelc
     PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/compiler
         ${LLVM_INCLUDE_DIRS}
 )
 
@@ -36,11 +79,16 @@ target_compile_definitions(torelc
         ${LLVM_DEFINITIONS}
 )
 
-if(MSVC)
-    target_compile_options(torelc PRIVATE /W4 /permissive-)
-else()
-    target_compile_options(torelc PRIVATE -Wall -Wextra -Wpedantic)
-endif()
+target_link_libraries(torelc
+    PRIVATE
+        torel_source
+)
+
+torel_enable_warnings(torelc)
+
+# -----------------------------------------------------------------------------
+# Tests
+# -----------------------------------------------------------------------------
 
 if(TOREL_BUILD_TESTS)
     include(CTest)
@@ -48,5 +96,21 @@ if(TOREL_BUILD_TESTS)
     add_test(
         NAME compiler.starts
         COMMAND torelc
+    )
+
+    add_executable(torel_source_tests
+        tests/source/SourceInfrastructureTests.cpp
+    )
+
+    target_link_libraries(torel_source_tests
+        PRIVATE
+            torel_source
+    )
+
+    torel_enable_warnings(torel_source_tests)
+
+    add_test(
+        NAME source.infrastructure
+        COMMAND torel_source_tests
     )
 endif()
