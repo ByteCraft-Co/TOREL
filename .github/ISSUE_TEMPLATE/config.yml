@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/ByteCraft-Co/TOREL/security/advisories/new
+    about: Use GitHub Security Advisories for private vulnerability reports.

@@ -34,3 +34,6 @@ compile_commands.json
 # OS
 .DS_Store
 Thumbs.db
+
+# Developer-local CMake presets
+CMakeUserPresets.json

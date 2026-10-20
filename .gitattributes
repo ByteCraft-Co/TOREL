@@ -36,3 +36,11 @@ CMakeLists.txt text eol=lf
 *.ico    binary
 *.pdf    binary
 *.zip    binary
+
+# Repository metadata / extensionless text
+.gitattributes                 text eol=lf
+.gitignore                     text eol=lf
+.editorconfig                  text eol=lf
+.clang-format                  text eol=lf
+LICENSE                        text eol=lf
+CMakeUserPresets.json.example  text eol=lf
