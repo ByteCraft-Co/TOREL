@@ -87,6 +87,31 @@ target_link_libraries(torel_diagnostics
 torel_enable_warnings(torel_diagnostics)
 
 # -----------------------------------------------------------------------------
+# Lexer
+# -----------------------------------------------------------------------------
+
+add_library(torel_lexer
+    compiler/lexer/src/Lexer.cpp
+)
+
+target_include_directories(torel_lexer
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/compiler/lexer/include
+)
+
+target_compile_features(torel_lexer
+    PUBLIC
+        cxx_std_23
+)
+
+target_link_libraries(torel_lexer
+    PUBLIC
+        torel_source
+        torel_diagnostics
+)
+
+torel_enable_warnings(torel_lexer)
+# -----------------------------------------------------------------------------
 # Stage 0 compiler
 # -----------------------------------------------------------------------------
 
@@ -108,6 +133,7 @@ target_link_libraries(torelc
     PRIVATE
         torel_source
         torel_diagnostics
+        torel_lexer
 )
 
 torel_enable_warnings(torelc)
@@ -154,5 +180,20 @@ if(TOREL_BUILD_TESTS)
     add_test(
         NAME diagnostics.foundation
         COMMAND torel_diagnostics_tests
+    )
+    add_executable(torel_lexer_tests
+        tests/lexer/LexerTests.cpp
+    )
+
+    target_link_libraries(torel_lexer_tests
+        PRIVATE
+            torel_lexer
+    )
+
+    torel_enable_warnings(torel_lexer_tests)
+
+    add_test(
+        NAME lexer.foundation
+        COMMAND torel_lexer_tests
     )
 endif()
