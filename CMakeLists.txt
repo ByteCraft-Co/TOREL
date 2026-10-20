@@ -112,6 +112,32 @@ target_link_libraries(torel_lexer
 
 torel_enable_warnings(torel_lexer)
 # -----------------------------------------------------------------------------
+# Parser
+# -----------------------------------------------------------------------------
+
+add_library(torel_parser
+    compiler/parser/src/TokenCursor.cpp
+    compiler/parser/src/Parser.cpp
+)
+
+target_include_directories(torel_parser
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/include
+)
+
+target_compile_features(torel_parser
+    PUBLIC
+        cxx_std_23
+)
+
+target_link_libraries(torel_parser
+    PUBLIC
+        torel_lexer
+        torel_diagnostics
+)
+
+torel_enable_warnings(torel_parser)
+# -----------------------------------------------------------------------------
 # Stage 0 compiler
 # -----------------------------------------------------------------------------
 
@@ -134,6 +160,7 @@ target_link_libraries(torelc
         torel_source
         torel_diagnostics
         torel_lexer
+        torel_parser
 )
 
 torel_enable_warnings(torelc)
@@ -195,5 +222,20 @@ if(TOREL_BUILD_TESTS)
     add_test(
         NAME lexer.foundation
         COMMAND torel_lexer_tests
+    )
+    add_executable(torel_parser_tests
+        tests/parser/ParserTests.cpp
+    )
+
+    target_link_libraries(torel_parser_tests
+        PRIVATE
+            torel_parser
+    )
+
+    torel_enable_warnings(torel_parser_tests)
+
+    add_test(
+        NAME parser.foundation
+        COMMAND torel_parser_tests
     )
 endif()
