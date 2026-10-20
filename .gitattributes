@@ -1,0 +1,38 @@
+# TOREL repository text normalization.
+# Source-controlled text uses LF regardless of developer platform.
+
+* text=auto
+
+# C / C++
+*.c      text eol=lf
+*.cc     text eol=lf
+*.cpp    text eol=lf
+*.h      text eol=lf
+*.hh     text eol=lf
+*.hpp    text eol=lf
+
+# Build/configuration
+CMakeLists.txt text eol=lf
+*.cmake         text eol=lf
+*.json          text eol=lf
+*.toml          text eol=lf
+*.yaml          text eol=lf
+*.yml           text eol=lf
+
+# Documentation/specification
+*.md     text eol=lf
+*.txt    text eol=lf
+
+# Windows-native scripts
+*.ps1    text eol=crlf
+*.bat    text eol=crlf
+*.cmd    text eol=crlf
+
+# Binary files
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.ico    binary
+*.pdf    binary
+*.zip    binary
