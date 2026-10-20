@@ -1,0 +1,60 @@
+name: Compiler feature
+description: Propose compiler implementation work that does not silently redefine the language.
+title: "[Compiler] "
+labels:
+  - "area:compiler"
+  - "type:feature"
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What compiler capability or architectural need is missing?
+    validations:
+      required: true
+
+  - type: input
+    id: subsystem
+    attributes:
+      label: Subsystem
+      placeholder: source, lexer, parser, HIR, resolver, types, MIR, backend...
+    validations:
+      required: true
+
+  - type: textarea
+    id: boundary
+    attributes:
+      label: Implementation boundary
+      description: What should this work include, and what should it deliberately exclude?
+    validations:
+      required: true
+
+  - type: textarea
+    id: invariants
+    attributes:
+      label: Invariants
+      description: Which existing compiler/language invariants must remain true?
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance conditions
+      description: What must be true and tested for this issue to be complete?
+    validations:
+      required: true
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies / blocked by
+      description: Link related issues or prerequisites.
+
+  - type: checkboxes
+    id: semantics
+    attributes:
+      label: Language boundary
+      options:
+        - label: This issue does not rely on silently inventing unspecified language semantics.
+          required: true

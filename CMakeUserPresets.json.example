@@ -1,0 +1,32 @@
+{
+  "version": 6,
+  "include": [
+    "CMakePresets.json"
+  ],
+  "configurePresets": [
+    {
+      "name": "local-dev",
+      "displayName": "TOREL Local Development",
+      "inherits": "dev",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "C:/Program Files/LLVM/bin/clang++.exe",
+        "LLVM_DIR": "C:/path/to/full-llvm-sdk/lib/cmake/llvm"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "local-dev",
+      "configurePreset": "local-dev"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "local-dev",
+      "configurePreset": "local-dev",
+      "output": {
+        "outputOnFailure": true
+      }
+    }
+  ]
+}

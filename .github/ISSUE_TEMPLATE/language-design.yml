@@ -1,0 +1,77 @@
+name: Language design
+description: Propose or analyze a TOREL semantic or syntax rule.
+title: "[Language] "
+labels:
+  - "area:language"
+  - "type:design"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        TOREL design is semantics-first. State the semantic problem before proposing surface syntax.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Semantic problem
+      description: What problem must the language solve?
+    validations:
+      required: true
+
+  - type: textarea
+    id: rule
+    attributes:
+      label: Proposed semantic rule
+      description: Describe the rule independently of its spelling.
+    validations:
+      required: true
+
+  - type: textarea
+    id: syntax
+    attributes:
+      label: Proposed syntax
+      description: Optional. Give syntax only after the semantic rule is clear.
+      render: text
+
+  - type: textarea
+    id: interactions
+    attributes:
+      label: Interaction with existing TOREL rules
+      description: Ownership, authority, failure, control, typing, cleanup, concurrency, ABI, etc.
+    validations:
+      required: true
+
+  - type: textarea
+    id: safety
+    attributes:
+      label: Safety and performance impact
+      description: Does this hide authority, failure, allocation, dynamic dispatch, concurrency, or cost?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Include the option of leaving the feature out.
+
+  - type: dropdown
+    id: status
+    attributes:
+      label: Proposed status
+      options:
+        - Experimental
+        - Candidate
+        - Deferred
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: constitution
+    attributes:
+      label: Design checks
+      options:
+        - label: The proposal does not treat familiarity with another language as design authority.
+          required: true
+        - label: Major semantic events remain explicit.
+          required: true
