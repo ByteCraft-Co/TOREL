@@ -17,18 +17,41 @@
         "LLVM_DIR": "D:/Dev/LLVM-23.1.2/lib/cmake/llvm",
         "TOREL_BUILD_TESTS": "ON"
       }
+    },
+    {
+      "name": "ci-linux",
+      "displayName": "TOREL CI Linux",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/ci",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++-23",
+        "LLVM_DIR": "/usr/lib/llvm-23/lib/cmake/llvm",
+        "TOREL_BUILD_TESTS": "ON"
+      }
     }
   ],
   "buildPresets": [
     {
       "name": "dev",
       "configurePreset": "dev"
+    },
+    {
+      "name": "ci-linux",
+      "configurePreset": "ci-linux"
     }
   ],
   "testPresets": [
     {
       "name": "dev",
       "configurePreset": "dev",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "ci-linux",
+      "configurePreset": "ci-linux",
       "output": {
         "outputOnFailure": true
       }
