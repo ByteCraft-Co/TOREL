@@ -26,7 +26,9 @@ struct SourceSpan final {
     [[nodiscard]]
     constexpr ByteOffset size_bytes() const noexcept
     {
-        return end - begin;
+        return end >= begin
+            ? end - begin
+            : 0;
     }
 
     [[nodiscard]]

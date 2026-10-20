@@ -193,6 +193,10 @@ void test_spans()
         "reversed span must be invalid");
 
     expect(
+        reversed.size_bytes() == 0,
+        "invalid reversed span must not underflow");
+
+    expect(
         !manager.text(reversed).has_value(),
         "invalid span must not resolve");
 
@@ -203,6 +207,77 @@ void test_spans()
         "out-of-range span must not resolve");
 }
 
+void test_utf8_byte_semantics()
+{
+    using namespace torel::source;
+
+    SourceManager manager;
+
+    // UTF-8 bytes:
+    // A      = 1 byte
+    // U+00E9 = 2 bytes: C3 A9
+    // newline = 1 byte
+    // B      = 1 byte
+    const std::string source =
+        "A\xC3\xA9\nB";
+
+    const SourceId id =
+        manager.add_source("utf8.torel", source);
+
+    const SourceFile* file = manager.get(id);
+
+    expect(file != nullptr, "UTF-8 source must resolve");
+
+    expect(
+        file->size_bytes() == 5,
+        "UTF-8 source size must be measured in bytes");
+
+    const SourceSpan multibyte{id, 1, 3};
+
+    const auto text = manager.text(multibyte);
+
+    expect(
+        text.has_value(),
+        "UTF-8 byte span must resolve");
+
+    expect(
+        text->size() == 2,
+        "multibyte character must occupy two source bytes");
+
+    expect(
+        *text == std::string_view{"\xC3\xA9", 2},
+        "UTF-8 span must preserve exact bytes");
+
+    const auto second_line =
+        manager.line_column(SourceLocation{id, 4});
+
+    expect(
+        second_line.has_value(),
+        "second UTF-8 source line must resolve");
+
+    expect(
+        second_line->line == 2,
+        "byte offset 4 must begin line 2");
+
+    expect(
+        second_line->byte_column == 1,
+        "line 2 must begin at byte column 1");
+
+    const auto inside_multibyte =
+        manager.line_column(SourceLocation{id, 2});
+
+    expect(
+        inside_multibyte.has_value(),
+        "location inside multibyte sequence must resolve");
+
+    expect(
+        inside_multibyte->line == 1,
+        "multibyte sequence must remain on line 1");
+
+    expect(
+        inside_multibyte->byte_column == 3,
+        "columns at this layer must count bytes");
+}
 void test_empty_source()
 {
     using namespace torel::source;
@@ -238,6 +313,7 @@ int main()
         test_exact_source_preservation();
         test_line_mapping();
         test_spans();
+        test_utf8_byte_semantics();
         test_empty_source();
     }
     catch (const std::exception& exception) {
