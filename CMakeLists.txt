@@ -138,6 +138,32 @@ target_link_libraries(torel_parser
 
 torel_enable_warnings(torel_parser)
 # -----------------------------------------------------------------------------
+# HIR
+# -----------------------------------------------------------------------------
+
+add_library(torel_hir
+    compiler/hir/src/HirModule.cpp
+    compiler/hir/src/HirLowerer.cpp
+)
+
+target_include_directories(torel_hir
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/compiler/hir/include
+)
+
+target_compile_features(torel_hir
+    PUBLIC
+        cxx_std_23
+)
+
+target_link_libraries(torel_hir
+    PUBLIC
+        torel_parser
+        torel_source
+)
+
+torel_enable_warnings(torel_hir)
+# -----------------------------------------------------------------------------
 # Stage 0 compiler
 # -----------------------------------------------------------------------------
 
@@ -161,6 +187,7 @@ target_link_libraries(torelc
         torel_diagnostics
         torel_lexer
         torel_parser
+        torel_hir
 )
 
 torel_enable_warnings(torelc)
@@ -237,5 +264,20 @@ if(TOREL_BUILD_TESTS)
     add_test(
         NAME parser.foundation
         COMMAND torel_parser_tests
+    )
+    add_executable(torel_hir_tests
+        tests/hir/HirTests.cpp
+    )
+
+    target_link_libraries(torel_hir_tests
+        PRIVATE
+            torel_hir
+    )
+
+    torel_enable_warnings(torel_hir_tests)
+
+    add_test(
+        NAME hir.foundation
+        COMMAND torel_hir_tests
     )
 endif()
